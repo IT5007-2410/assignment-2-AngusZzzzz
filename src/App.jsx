@@ -4,19 +4,23 @@ const initialTravellers = [
     id: 1, 
     name: 'Jack', 
     phone: 88885555, 
-    /*email: 'jack@example.com',*/
+    passport: 'S1234567A',
+    nationality: 'Singapore',
+    gender: 'male',
     age: 30,
     bookingTime: new Date(),
-    seatNumber: 'A1',
+    seatNumber: 'A01',
   },
   {
     id: 2, 
     name: 'Rose', 
     phone: 88884444, 
-    /*email: 'rose@example.com',*/
+    passport: 'S1234567B',
+    nationality: 'Singapore',
+    gender: 'female',
     age: 25,
     bookingTime: new Date(),
-    seatNumber: 'B1',
+    seatNumber: 'B01',
   },
 ];
 
@@ -30,7 +34,9 @@ function TravellerRow(props) {
       <td>{traveller.id}</td>
       <td>{traveller.name}</td>
       <td>{traveller.phone}</td>
-      {/* <td>{traveller.email}</td> */}
+      <td>{traveller.passport}</td>
+      <td>{traveller.nationality}</td>
+      <td>{traveller.gender}</td>
       <td>{traveller.age}</td>
       <td>{traveller.bookingTime.toDateString()}</td>
       <td>{traveller.seatNumber}</td>
@@ -47,11 +53,13 @@ function Display(props) {
     <table className="bordered-table">
       <thead>
         <tr>
-	  {/*Q3. Below table is just an example. Add more columns based on the traveller attributes you choose.*/}
+	        {/*Q3. Below table is just an example. Add more columns based on the traveller attributes you choose.*/}
           <th>ID</th>
           <th>Name</th>
           <th>Phone</th>
-          {/* <th>Email</th> */}
+          <th>Passport</th>
+          <th>Nationality</th>
+          <th>Gender</th>
           <th>Age</th>
           <th>Booking Time</th>
           <th>Seat Number</th>
@@ -59,7 +67,7 @@ function Display(props) {
       </thead>
       <tbody>
         {/*Q3. write code to call the JS variable defined at the top of this function to render table rows.*/}
-        {travellers.map(traveller => (
+        {travellers && travellers.map(traveller => (
           <TravellerRow key={traveller.id} traveller={traveller} />
         ))}
       </tbody>
@@ -72,73 +80,157 @@ class Add extends React.Component {
     super();
     this.handleSubmit = this.handleSubmit.bind(this);
     this.state = {
-      travellerName: '',
+      name: '',
       phone: '',
+      passport: '',
+      nationality: '',
+      gender: '',
       age: '',
-      seatNumber: ''
+      seatNumber: '',
     };
+    this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleChange = this.handleChange.bind(this);
+  }
+
+  handleChange(event) {
+    const { name, value } = event.target;
+    this.setState({ [name]: value });
   }
 
   handleSubmit(e) {
     e.preventDefault();
     /*Q4. Fetch the passenger details from the add form and call bookTraveller()*/
     const newTraveller = {
-      id: Date.now(),  // 使用当前时间作为唯一ID
-      name: this.state.travellerName,
+      name: this.state.name,
       phone: this.state.phone,
-      bookingTime: new Date(),
-      age: this.state.age,
+      passport: this.state.passport,
+      nationality: this.state.nationality,
+      gender: this.state.gender,
+      age: parseInt(this.state.age, 10),
       seatNumber: this.state.seatNumber,
+      bookingTime: new Date(),
     };
-    this.props.bookTraveller(newTraveller); // 调用父组件的 bookTraveller 方法
-    this.setState({ travellerName: '', phone: '', age: '', seatNumber: '' }); // 清空表单
-  }
-
-  handleChange = (e) => {
-    this.setState({ [e.target.name]: e.target.value }); // 更新状态
+    this.props.bookTraveller(newTraveller);
+    // reset
+    this.setState({
+      name: '',
+      phone: '',
+      passport: '',
+      nationality: '',
+      gender: '',
+      age: '',
+      seatNumber: '',
+    });
   }
 
   render() {
+    const formRowStyle = {
+      display: 'flex',
+      alignItems: 'center',
+      marginBottom: '8px',
+    };
+  
+    const labelStyle = {
+      width: '120px',
+      textAlign: 'right',
+      marginRight: '10px',
+    };
+  
+    const inputStyle = {
+      width: '100%', 
+      maxWidth: '200px',
+    };
+
     return (
       <form name="addTraveller" onSubmit={this.handleSubmit}>
-	    {/*Q4. Placeholder to enter passenger details. Below code is just an example.*/}
-        {/* Q4. 输入旅客姓名 */}
-        <input
-          type="text"
-          name="travellerName"
-          value={this.state.travellerName}
-          onChange={this.handleChange}
-          placeholder="Name"
-          required
-        />
-        {/* Q4. 输入旅客电话 */}
-        <input
-          type="text"
-          name="phone"
-          value={this.state.phone}
-          onChange={this.handleChange}
-          placeholder="Phone"
-          required
-        />
-        {/* Q4. 输入旅客年龄 */}  
-        <input
-          type="text"
-          name="age"
-          value={this.state.age}
-          onChange={this.handleChange}
-          placeholder="Age"
-          required
-        />
-        {/* Q4. 输入座位号 */}
-        <input
-          type="text"
-          name="seatNumber"
-          value={this.state.seatNumber}
-          onChange={this.handleChange}
-          placeholder="Seat Number"
-          required
-        />
-        <button>Add</button>
+      {/*Q4. Placeholder to enter passenger details. Below code is just an example.*/}
+      <div style={formRowStyle}>
+          <label style={labelStyle}>Name:</label>
+          <input
+            type="text"
+            name="name"
+            value={this.state.name}
+            onChange={this.handleChange}
+            style={inputStyle}
+          />
+        </div>
+
+        <div style={formRowStyle}>
+          <label style={labelStyle}>Phone:</label>
+          <input
+            type="text"
+            name="phone"
+            value={this.state.phone}
+            onChange={this.handleChange}
+            style={inputStyle}
+          />
+        </div>
+
+        <div style={formRowStyle}>
+          <label style={labelStyle}>Passport:</label>
+          <input
+            type="text"
+            name="passport"
+            value={this.state.passport}
+            onChange={this.handleChange}
+            style={inputStyle}
+          />
+        </div>
+
+        <div style={formRowStyle}>
+          <label style={labelStyle}>Nationality:</label>
+          <input
+            type="text"
+            name="nationality"
+            value={this.state.nationality}
+            onChange={this.handleChange}
+            style={inputStyle}
+          />
+        </div>
+
+        <div style={formRowStyle}>
+          <label style={labelStyle}>Gender:</label>
+          <select
+            name="gender"
+            value={this.state.gender}
+            onChange={this.handleChange}
+            style={inputStyle}
+          >
+            <option value="">Select</option>
+            <option value="male">Male</option>
+            <option value="female">Female</option>
+          </select>
+        </div>
+
+        <div style={formRowStyle}>
+          <label style={labelStyle}>Age:</label>
+          <input
+            type="number"
+            name="age"
+            value={this.state.age}
+            onChange={this.handleChange}
+            style={inputStyle}
+          />
+        </div>
+
+        <div style={formRowStyle}>
+          <label style={labelStyle}>Seat Number:</label>
+          <select
+            name="seatNumber"
+            value={this.state.seatNumber}
+            onChange={this.handleChange}
+            style={inputStyle}
+          >
+            <option value="">Select a seat</option>
+            {this.props.availableSeats.map(seat => (
+              <option key={seat} value={seat}>{seat}</option>
+            ))}
+          </select>
+        </div>
+
+        <div style={formRowStyle}>
+          <button type="submit">Add</button>
+        </div>
       </form>
     );
   }
@@ -149,77 +241,131 @@ class Delete extends React.Component {
   constructor() {
     super();
     this.state = {
-      travellerName: '', // 用于存储输入的旅客姓名
+      name: '',
+      passport: '',
     };
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleChange = this.handleChange.bind(this);
   }
+
+  handleChange(event) {
+    const { name, value } = event.target;
+    this.setState({ [name]: value });
+  }
+
   handleSubmit(e) {
     e.preventDefault();
     /*Q5. Fetch the passenger details from the deletion form and call deleteTraveller()*/
-    const travellerName = this.state.travellerName;
-    this.props.deleteTraveller(travellerName); // 调用父组件的 deleteTraveller 方法
-    this.setState({ travellerName: '' }); // 提交后清空表单
-  }
-
-  handleChange = (e) => {
-    this.setState({ [e.target.name]: e.target.value }); // 更新输入框的状态
+    const { name, passport } = this.state;
+    this.props.deleteTraveller(name, passport);
+    // reset
+    this.setState({
+      name: '',
+      passport: '',
+    });
   }
 
   render() {
+    const formRowStyle = {
+      display: 'flex',
+      alignItems: 'center',
+      marginBottom: '8px',
+    };
+
+    const labelStyle = {
+      width: '120px',
+      textAlign: 'right',
+      marginRight: '10px',
+    };
+
+    const inputStyle = {
+      width: '100%', 
+      maxWidth: '200px',
+    };
+
     return (
       <form name="deleteTraveller" onSubmit={this.handleSubmit}>
-	    {/*Q5. Placeholder form to enter information on which passenger's ticket needs to be deleted. Below code is just an example.*/}
-        {/* Q5. 输入要删除的旅客姓名 */}
-        <input
-          type="text"
-          name="travellerName"
-          value={this.state.travellerName}
-          onChange={this.handleChange}
-          placeholder="Name"
-          required
-        />
-        <button>Delete</button>
+        {/*Q5. Placeholder form to enter information on which passenger's ticket needs to be deleted. Below code is just an example.*/}
+        <div style={formRowStyle}>
+          <label style={labelStyle}>Name:</label>
+          <input
+            type="text"
+            name="name"
+            value={this.state.name}
+            onChange={this.handleChange}
+            style={inputStyle}
+          />
+        </div>
+
+        <div style={formRowStyle}>
+          <label style={labelStyle}>Passport:</label>
+          <input
+            type="text"
+            name="passport"
+            value={this.state.passport}
+            onChange={this.handleChange}
+            style={inputStyle}
+          />
+        </div>
+
+        <div style={formRowStyle}>
+          <button type="submit">Delete</button>
+        </div>
       </form>
     );
   }
 }
 
+const totalSeats = 20;
+const seatRows = ['A', 'B', 'C', 'D'];
+const seatColumns = ['01', '02', '03', '04', '05'];
+const allSeats = seatRows.flatMap(row => seatColumns.map(col => row + col));
+
 class Homepage extends React.Component {
-  render() {
-    const { travellers, displayFreeSeats } = this.props;
-    const totalSeats = 10; // 假设火车总共有10个座位
-    const reservedSeats = travellers.length;
-    const freeSeats = totalSeats - reservedSeats;
+	constructor() {
+	  super();
+	}
 
-    return (
-      <div>
-        {/* Q2. 导航栏 */}
-        <nav>
-          <button onClick={() => this.props.setSelector(1)}>Add Traveller</button>
-          <button onClick={() => this.props.setSelector(2)}>Delete Traveller</button>
-          <button onClick={() => this.props.setSelector(3)}>Display Travellers</button>
-        </nav>
+render() {
+  const { travellers } = this.props;
+  const occupiedSeats = travellers.map(traveller => traveller.seatNumber);
 
-        {/* Q2. 显示空闲座位数 */}
-        <h3>Free Seats: {freeSeats} / {totalSeats}</h3>
+  return (
+    <div>
+      <h2>Welcome to the High-Speed Railway Reservation System</h2>
+      <p>Total Seats: {totalSeats}</p>
+      <p>Occupied Seats: {travellers.length}</p>
+      <p>Free Seats: {totalSeats - travellers.length}</p>
 
-        {/* Q2. 显示座位的可视化示例 */}
-        <div style={{ display: 'flex', justifyContent: 'space-between', width: '200px' }}>
-          {Array.from({ length: totalSeats }).map((_, index) => (
-            <div
-              key={index}
-              style={{
-                width: '20px',
-                height: '20px',
-                backgroundColor: index < reservedSeats ? 'gray' : 'green',
-                border: '1px solid black',
-              }}
-            ></div>
-          ))}
-        </div>
+      {/*Q2. Placeholder for Homepage code that shows free seats visually.*/}
+      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
+        {seatRows.map((row) => (
+          <div key={row} style={{ display: 'flex' }}>
+            {seatColumns.map((col) => {
+              const seatNumber = row + col;
+              const isOccupied = occupiedSeats.includes(seatNumber);
+              return (
+                <div
+                  key={seatNumber}
+                  style={{
+                    width: '30px',
+                    height: '30px',
+                    margin: '5px',
+                    backgroundColor: isOccupied ? 'grey' : 'green',
+                    border: '1px solid black',
+                  }}
+                >
+                  {/* no content for seat space */}
+                </div>
+              );
+            })}
+          </div>
+        ))}
       </div>
-    );
-  }
+
+    </div>
+  );
+}
 }
 
 class TicketToRide extends React.Component {
@@ -231,11 +377,11 @@ class TicketToRide extends React.Component {
     this.setSelector = this.setSelector.bind(this);
   }
 
-  setSelector(value)
-  {
+  setSelector(value){
   	/*Q2. Function to set the value of component selector variable based on user's button click.*/
     this.setState({ selector: value });
   }
+
   componentDidMount() {
     this.loadData();
   }
@@ -246,63 +392,62 @@ class TicketToRide extends React.Component {
     }, 500);
   }
 
-  bookTraveller(passenger) {
-	    /*Q4. Write code to add a passenger to the traveller state variable.*/
-      this.setState((prevState) => ({
-        travellers: [...prevState.travellers, passenger] // 添加新旅客到列表
-      }));
+  bookTraveller(newTraveller) {
+    /*Q4. Write code to add a passenger to the traveller state variable.*/
+    const id = this.state.travellers.length + 1;
+    const travellerWithId = { ...newTraveller, id };
+    this.setState((prevState) => ({
+      travellers: [...prevState.travellers, travellerWithId],
+    }));  
   }
 
-  deleteTraveller(passenger) {
+  deleteTraveller(name, passport) {
 	  /*Q5. Write code to delete a passenger from the traveller state variable.*/
     this.setState((prevState) => ({
-      travellers: prevState.travellers.filter(traveller => traveller.name !== passenger)
+      travellers: prevState.travellers.filter(
+        (traveller) =>
+          traveller.name !== name || traveller.passport !== passport
+      ),
     }));
   }
+  
   render() {
-    const { selector, travellers } = this.state;
+    /* Occupied and available seats */
+    const occupiedSeats = this.state.travellers.map(traveller => traveller.seatNumber);
+    const availableSeats = allSeats.filter(seat => !occupiedSeats.includes(seat));
+
     return (
       <div>
         <h1>Ticket To Ride</h1>
-        <div>
+	      <div>
+          {/*Q2. Code for Navigation bar. Use basic buttons to create a nav bar. Use states to manage selection.*/}
           <button onClick={() => this.setSelector(1)}>Homepage</button>
           <button onClick={() => this.setSelector(2)}>Display Travellers</button>
           <button onClick={() => this.setSelector(3)}>Add Traveller</button>
           <button onClick={() => this.setSelector(4)}>Delete Traveller</button>
-        {/*Q2. Code for Navigation bar. Use basic buttons to create a nav bar. Use states to manage selection.*/}
         </div>
         <div>
-          {selector === 1 && (
-            // Homepage组件显示空座位信息
-            <Homepage travellers={travellers} setSelector={this.setSelector} />
+          {/*Only one of the below four divisions is rendered based on the button clicked by the user.*/}
+          {this.state.selector === 1 && (
+            /* Q2 and Q6. Code to call Instance that draws Homepage. Homepage shows Visual Representation of free seats. */
+            <Homepage travellers={this.state.travellers} />
           )}
-
-          {selector === 2 && (
-            // Q3. 显示旅客信息的组件
-            <Display travellers={travellers} />
+          {this.state.selector === 2 && (
+            /* Q3. Code to call component that Displays Travellers. */
+            <Display travellers={this.state.travellers} />
           )}
-
-          {selector === 3 && (
-            // Q4. 添加旅客的组件
-            <Add bookTraveller={this.bookTraveller} />
+          {this.state.selector === 3 && (
+            /* Q4. Code to call the component that adds a traveller. */
+            <Add bookTraveller={this.bookTraveller} availableSeats={availableSeats} />
           )}
-
-          {selector === 4 && (
-            // Q5. 删除旅客的组件
+          {this.state.selector === 4 && (
+            /* Code to call the component that deletes a traveller based on a given attribute. */
             <Delete deleteTraveller={this.deleteTraveller} />
           )}
-          {/*Only one of the below four divisions is rendered based on the button clicked by the user.*/}
-          {/*Q2 and Q6. Code to call Instance that draws Homepage. Homepage shows Visual Representation of free seats.*/}
-          {/*Q3. Code to call component that Displays Travellers.*/}
-      
-          {/*Q4. Code to call the component that adds a traveller.*/}
-          {/*Q5. Code to call the component that deletes a traveller based on a given attribute.*/}
         </div>
       </div>
     );
   }
 }
-
 const element = <TicketToRide />;
-
 ReactDOM.render(element, document.getElementById('contents'));
