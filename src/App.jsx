@@ -141,96 +141,110 @@ class Add extends React.Component {
       maxWidth: '200px',
     };
 
+    const seatsFull = this.props.availableSeats.length === 0;
+
     return (
       <form name="addTraveller" onSubmit={this.handleSubmit}>
       {/*Q4. Placeholder to enter passenger details. Below code is just an example.*/}
-      <div style={formRowStyle}>
-          <label style={labelStyle}>Name:</label>
-          <input
-            type="text"
-            name="name"
-            value={this.state.name}
-            onChange={this.handleChange}
-            style={inputStyle}
-          />
-        </div>
+      {seatsFull && <p style={{ color: 'red' }}>All seats are occupied. No more travellers are allowed.</p>}
+      {!seatsFull && (
+          <>
+            <div style={formRowStyle}>
+              <label style={labelStyle}>Name:</label>
+              <input
+                type="text"
+                name="name"
+                value={this.state.name}
+                onChange={this.handleChange}
+                style={inputStyle}
+                required
+              />
+            </div>
 
-        <div style={formRowStyle}>
-          <label style={labelStyle}>Phone:</label>
-          <input
-            type="text"
-            name="phone"
-            value={this.state.phone}
-            onChange={this.handleChange}
-            style={inputStyle}
-          />
-        </div>
+            <div style={formRowStyle}>
+              <label style={labelStyle}>Phone:</label>
+              <input
+                type="text"
+                name="phone"
+                value={this.state.phone}
+                onChange={this.handleChange}
+                style={inputStyle}
+                required
+              />
+            </div>
 
-        <div style={formRowStyle}>
-          <label style={labelStyle}>Passport:</label>
-          <input
-            type="text"
-            name="passport"
-            value={this.state.passport}
-            onChange={this.handleChange}
-            style={inputStyle}
-          />
-        </div>
+            <div style={formRowStyle}>
+              <label style={labelStyle}>Passport:</label>
+              <input
+                type="text"
+                name="passport"
+                value={this.state.passport}
+                onChange={this.handleChange}
+                style={inputStyle}
+                required
+              />
+            </div>
 
-        <div style={formRowStyle}>
-          <label style={labelStyle}>Nationality:</label>
-          <input
-            type="text"
-            name="nationality"
-            value={this.state.nationality}
-            onChange={this.handleChange}
-            style={inputStyle}
-          />
-        </div>
+            <div style={formRowStyle}>
+              <label style={labelStyle}>Nationality:</label>
+              <input
+                type="text"
+                name="nationality"
+                value={this.state.nationality}
+                onChange={this.handleChange}
+                style={inputStyle}
+                required
+              />
+            </div>
 
-        <div style={formRowStyle}>
-          <label style={labelStyle}>Gender:</label>
-          <select
-            name="gender"
-            value={this.state.gender}
-            onChange={this.handleChange}
-            style={inputStyle}
-          >
-            <option value="">Select</option>
-            <option value="male">Male</option>
-            <option value="female">Female</option>
-          </select>
-        </div>
+            <div style={formRowStyle}>
+              <label style={labelStyle}>Gender:</label>
+              <select
+                name="gender"
+                value={this.state.gender}
+                onChange={this.handleChange}
+                style={inputStyle}
+                required
+              >
+                <option value="">Select</option>
+                <option value="male">Male</option>
+                <option value="female">Female</option>
+              </select>
+            </div>
 
-        <div style={formRowStyle}>
-          <label style={labelStyle}>Age:</label>
-          <input
-            type="number"
-            name="age"
-            value={this.state.age}
-            onChange={this.handleChange}
-            style={inputStyle}
-          />
-        </div>
+            <div style={formRowStyle}>
+              <label style={labelStyle}>Age:</label>
+              <input
+                type="number"
+                name="age"
+                value={this.state.age}
+                onChange={this.handleChange}
+                style={inputStyle}
+                required
+              />
+            </div>
 
-        <div style={formRowStyle}>
-          <label style={labelStyle}>Seat Number:</label>
-          <select
-            name="seatNumber"
-            value={this.state.seatNumber}
-            onChange={this.handleChange}
-            style={inputStyle}
-          >
-            <option value="">Select a seat</option>
-            {this.props.availableSeats.map(seat => (
-              <option key={seat} value={seat}>{seat}</option>
-            ))}
-          </select>
-        </div>
+            <div style={formRowStyle}>
+              <label style={labelStyle}>Seat Number:</label>
+              <select
+                name="seatNumber"
+                value={this.state.seatNumber}
+                onChange={this.handleChange}
+                style={inputStyle}
+                required
+              >
+                <option value="">Select a seat</option>
+                {this.props.availableSeats.map(seat => (
+                  <option key={seat} value={seat}>{seat}</option>
+                ))}
+              </select>
+            </div>
 
-        <div style={formRowStyle}>
-          <button type="submit">Add</button>
-        </div>
+            <div style={formRowStyle}>
+              <button type="submit">Add</button>
+            </div>
+          </>
+        )}
       </form>
     );
   }
@@ -316,8 +330,8 @@ class Delete extends React.Component {
   }
 }
 
-const totalSeats = 20;
-const seatRows = ['A', 'B', 'C', 'D'];
+const totalSeats = 10;
+const seatRows = ['A', 'B'];
 const seatColumns = ['01', '02', '03', '04', '05'];
 const allSeats = seatRows.flatMap(row => seatColumns.map(col => row + col));
 
@@ -394,6 +408,11 @@ class TicketToRide extends React.Component {
 
   bookTraveller(newTraveller) {
     /*Q4. Write code to add a passenger to the traveller state variable.*/
+    if (this.state.travellers.length >= totalSeats) {
+      alert("All seats are occupied. No more bookings are allowed.");
+      return; // stop adding more passengers
+    }
+
     const id = this.state.travellers.length + 1;
     const travellerWithId = { ...newTraveller, id };
     this.setState((prevState) => ({
