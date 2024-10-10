@@ -385,7 +385,7 @@ render() {
 class TicketToRide extends React.Component {
   constructor() {
     super();
-    this.state = { travellers: [], selector: 1};
+    this.state = { travellers: [], selector: 1, nextId: 3};
     this.bookTraveller = this.bookTraveller.bind(this);
     this.deleteTraveller = this.deleteTraveller.bind(this);
     this.setSelector = this.setSelector.bind(this);
@@ -413,10 +413,11 @@ class TicketToRide extends React.Component {
       return; // stop adding more passengers
     }
 
-    const id = this.state.travellers.length + 1;
+    const id = this.state.nextId;
     const travellerWithId = { ...newTraveller, id };
     this.setState((prevState) => ({
       travellers: [...prevState.travellers, travellerWithId],
+      nextId: prevState.nextId + 1, // increment nextId
     }));  
   }
 
